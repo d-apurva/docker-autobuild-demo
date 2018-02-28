@@ -5,7 +5,7 @@
   "parameters": {
     "basics": [
       {
-        "name": "adminUsername",
+        "name": "clusterName",
         "type": "Microsoft.Compute.UserNameTextBox",
         "label": "Admin Username",
         "toolTip": "Username to use for SSH access to the virtual machines",
@@ -42,37 +42,38 @@
     ],
     "steps" : [
       {
-        "name": "configureMN",
-        "label" : "Master and Node Configuration",
+        "name": "clustersize",
+        "label" : "Sizing",
         "subLabel": {
-          "preValidation": "Required",
+          "preValidation": "Specify Type and Number of Data Nodes",
           "postValidation": "Done"
         },
-        "bladeTitle" : "Master Configuration",
+        "bladeTitle" : "Sizing",
         "elements" : [
           {
-        "name": "clusterName",
-        "type": "Microsoft.Compute.UserNameTextBox",
-        "label": "Admin Username",
-        "toolTip": "DNS prefix for the application",
-        "defaultValue": "dockmcluster",
-        "constraints": {
-          "required": true,
-          "regex": "^[a-z0-9]{3,12}$",
-          "validationMessage": "Cluster Name must be 3 to 12 alphanumeric characters"
-        },
-        "osPlatform": "Linux"
-      },
+            "name": "vmSize",
+            "type": "Microsoft.Compute.SizeSelector",
+            "label": "Virtual Machine Type",
+            "toolTip": "Premium storage enabled types with at least 4 cores are recommended.",
+            "recommendedSizes": [
+                "Standard_DS3_v2",
+                "Standard_DS4_v2",
+                "Standard_DS5_v2"
+            ],
+            "osPlatform": "Linux",
+            "count": "1"
+          }
         ]
       }
     ],
     "outputs": {
       "location" : "[location()]",      
-      "adminUsername": "[basics('adminUsername')]"
+      "clusterName": "[basics('clusterName')]",
 	    "adminPassword": "[basics('sshPublicKey').password]",
 	    "sshPublicKey": "[basics('sshPublicKey').sshPublicKey]",
-	    "authenticationType": "[basics('sshPublicKey').authenticationType]",
-      "clusterName": "[steps('configureMN').clusterName]",
+	    "authenticationType": "[basics('sshPublicKey').authenticationType]",      
+      "datanodeVmType" : "[steps('clustersize').vmSize]"      
+      
     }
   }
 }
