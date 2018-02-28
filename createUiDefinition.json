@@ -68,11 +68,11 @@
     ],
     "outputs": {
       "location" : "[location()]",      
-      "adminUsername": "[basics('adminUsername')]",
-      "adminUsername": "[steps('configureMN').clusterName]",
+      "adminUsername": "[basics('adminUsername')]"
 	    "adminPassword": "[basics('sshPublicKey').password]",
 	    "sshPublicKey": "[basics('sshPublicKey').sshPublicKey]",
-	    "authenticationType": "[basics('sshPublicKey').authenticationType]"
+	    "authenticationType": "[basics('sshPublicKey').authenticationType]",
+      "clusterName": "[steps('configureMN').clusterName]",
     }
   }
 }
