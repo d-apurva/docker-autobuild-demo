@@ -5,7 +5,7 @@
   "parameters": {
     "basics": [
       {
-        "name": "clusterName",
+        "name": "adminUsername",
         "type": "Microsoft.Compute.UserNameTextBox",
         "label": "Admin Username",
         "toolTip": "Username to use for SSH access to the virtual machines",
@@ -42,38 +42,37 @@
     ],
     "steps" : [
       {
-        "name": "clustersize",
-        "label" : "Sizing",
+        "name": "configureMN",
+        "label" : "Master and Node Configuration",
         "subLabel": {
-          "preValidation": "Specify Type and Number of Data Nodes",
+          "preValidation": "Required",
           "postValidation": "Done"
         },
-        "bladeTitle" : "Sizing",
+        "bladeTitle" : "Master Configuration",
         "elements" : [
           {
-            "name": "vmSize",
-            "type": "Microsoft.Compute.SizeSelector",
-            "label": "Virtual Machine Type",
-            "toolTip": "Premium storage enabled types with at least 4 cores are recommended.",
-            "recommendedSizes": [
-                "Standard_DS3_v2",
-                "Standard_DS4_v2",
-                "Standard_DS5_v2"
-            ],
-            "osPlatform": "Linux",
-            "count": "1"
-          }
+        "name": "clusterName",
+        "type": "Microsoft.Compute.UserNameTextBox",
+        "label": "Admin Username",
+        "toolTip": "DNS prefix for the application",
+        "defaultValue": "dockmcluster",
+        "constraints": {
+          "required": true,
+          "regex": "^[a-z0-9]{3,12}$",
+          "validationMessage": "Cluster Name must be 3 to 12 alphanumeric characters"
+        },
+        "osPlatform": "Linux"
+      },
         ]
       }
     ],
     "outputs": {
       "location" : "[location()]",      
-      "clusterName": "[basics('clusterName')]",
+      "adminUsername": "[basics('adminUsername')]",
+      "adminUsername": "[steps('configureMN').clusterName]",
 	    "adminPassword": "[basics('sshPublicKey').password]",
 	    "sshPublicKey": "[basics('sshPublicKey').sshPublicKey]",
-	    "authenticationType": "[basics('sshPublicKey').authenticationType]",      
-      "datanodeVmType" : "[steps('clustersize').vmSize]",      
-      "gemfireOnAzureProjectTag" : "1.0.0"
+	    "authenticationType": "[basics('sshPublicKey').authenticationType]"
     }
   }
 }
