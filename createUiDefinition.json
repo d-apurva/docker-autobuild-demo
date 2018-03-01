@@ -1,0 +1,109 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Compute.MultiVm",
+    "version": "0.1.2-preview",
+    "parameters": {
+      "basics": [
+        {
+          "name": "adminUsername",
+          "type": "Microsoft.Compute.UserNameTextBox",
+          "label": "Admin Username",
+          "toolTip": "Username to use for SSH access to the virtual machines",
+          "defaultValue": "dockm",
+          "constraints": {
+            "required": true,
+            "regex": "^[a-z0-9]{3,12}$",
+            "validationMessage": "Admin Username must be 3 to 12 alphanumeric characters"
+          },
+          "osPlatform": "Linux"
+        },
+        {
+                "name": "sshPublicKey",
+                "type": "Microsoft.Common.TextBox",
+                "label": {                                    
+                  "sshPublicKey": "SSH Public Key"
+                },
+                "toolTip": {                  
+                  "sshPublicKey": "Public key for passwordless SSH access to the virtual machines. The OpenSSH public key can be generated with tools like ssh-keygen on Linux or OS X."
+                },
+                "constraints": {
+                  "required": true
+                },
+                "options": {
+                  "hideConfirmation": false
+                },
+                "osPlatform": "Linux"
+              }
+      ],
+      "steps" : [
+        {
+          "name": "clustersize",
+          "label" : "Configurations",
+          "subLabel": {
+            "preValidation": "Required",
+            "postValidation": "Done"
+          },
+          "bladeTitle" : "Configurations",
+          "elements" : [          
+            {
+              "name": "clusterName",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Cluster Name",
+              "defaultValue": "dockmcluster",
+              "toolTip": "Name of cluster this template creates.",
+              "constraints": 
+              {
+                  "required": true,
+                  "regex": "^[a-z0-9]{1,30}$",
+                  "validationMessage": "Only lowercase alphanumeric characters are allowed, and the value must be 1-30 characters long."
+              }
+          },
+          {
+              "name": "installScript",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Installation Script Path",
+              "defaultValue": "https://raw.githubusercontent.com/d-apurva/Container-Service-ARMTemplate/master/installscript.sh",
+              "toolTip": "Installation Script Path!",
+              "constraints": {
+                  "required": false,
+                  "regex": null,
+                  "validationMessage": null
+              },
+              "visible": true
+          },          
+            {
+              "name": "installCommand",
+              "type": "Microsoft.Compute.UserNameTextBox",
+              "label": "Installation Command",
+              "toolTip": "Installation command.",
+              "defaultValue": "sh installscript.sh",                      
+              "osPlatform": "Linux"            
+            },
+            {
+              "name": "nodeCount",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Node Count",
+              "defaultValue": 1,
+              "toolTip": "Number of Swarm worker nodes in the cluster.",
+              "constraints": {
+                  "required": true,
+                  "regex": "^[1-9][0-9]?$|^100$",                  
+                  "validationMessage": null
+              },
+              "visible": true              
+          } 
+          ]
+        }
+      ],
+      "outputs": {
+        "location" : "[location()]",      
+        "adminUsername": "[basics('adminUsername')]",          
+          "sshPublicKey": "[basics('sshPublicKey').sshPublicKey]",                
+        "datanodeVmType" : "[steps('clustersize').clusterName]",
+        "installScript" : "[steps('clustersize').installScript]",
+        "installCommand" : "[steps('clustersize').installCommand]",
+        "nodeCount" : "[steps('clustersize').nodeCount]"      
+        
+      }
+    }
+  }
