@@ -19,8 +19,9 @@
         },
         {
                 "name": "sshPublicKey",
-                "type": "Microsoft.Common.TextBox",
-                "label": {                                    
+                "type": "Microsoft.Compute.CredentialsCombo",
+                "label": {
+                  "authenticationType": "Authentication Type",                  
                   "sshPublicKey": "SSH Public Key"
                 },
                 "toolTip": {                  
